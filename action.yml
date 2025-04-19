@@ -39,6 +39,7 @@ runs:
           echo "Error: visualsoar_dm_validation_log.jsonl was not created."
           exit 1
         fi
+        echo "Gradle exit code: $gradle_exit_code"
         exit $gradle_exit_code
 
     - name: Annotate with Validation Results

@@ -28,6 +28,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Validate Project with Datamap and Syntax Issues
+        id: validate
         uses: ./ # Use the local action
         with:
           projectPath: test_projects/has-datamap-errors/has-datamap-errors.vsa.json
@@ -35,7 +36,7 @@ jobs:
 
       - name: Assert Validation Failed
         run: |
-          if [ $? -eq 0 ]; then
+          if [ "${{ steps.validate.outcome }}" != "failure" ]; then
             echo "Expected validation to fail, but it passed."
             exit 1
           fi
