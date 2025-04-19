@@ -14,6 +14,15 @@ runs:
         repository: "YourUsername/VisualSoar"
         path: "VisualSoar"
 
+    - name: Report VisualSoar Version and Git SHA
+      shell: bash
+      run: |
+        cd VisualSoar
+        ./gradlew properties -q | grep "version:" > visualsoar_version.txt
+        echo "VisualSoar version: $(cat visualsoar_version.txt)"
+        git rev-parse HEAD > visualsoar_git_sha.txt
+        echo "VisualSoar git sha: $(cat visualsoar_git_sha.txt)"
+
     - name: Set up Java
       uses: actions/setup-java@v3
       with:
