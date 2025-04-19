@@ -11,7 +11,7 @@ runs:
     - name: Checkout VisualSoar
       uses: actions/checkout@v3
       with:
-        repository: "YourUsername/VisualSoar"
+        repository: "SoarGroup/VisualSoar"
         path: "VisualSoar"
 
     - name: Report VisualSoar Version and Git SHA
