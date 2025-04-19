@@ -1,0 +1,41 @@
+name: "Test VisualSoar Datamap Validation Action"
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  test-passing-project:
+    name: Test Passing Project
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Validate Project with no Datamap Issues
+        uses: ./ # Use the local action
+        with:
+          projectPath: test_projects/no-datamap-errors/no-datamap-errors.vsa.json
+
+
+  test-failing-project:
+    name: Test Failing Project
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Validate Project with Datamap and Syntax Issues
+        uses: ./ # Use the local action
+        with:
+          projectPath: test_projects/has-datamap-errors/has-datamap-errors.vsa.json
+        continue-on-error: true
+
+      - name: Assert Validation Failed
+        run: |
+          if [ $? -eq 0 ]; then
+            echo "Expected validation to fail, but it passed."
+            exit 1
+          fi
