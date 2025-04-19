@@ -32,7 +32,7 @@ runs:
       shell: bash
       run: |
         cd VisualSoar
-        ./gradlew run --args="--check productionsAgainstDatamap --project ${{ inputs.projectPath }}" --json | tee visualsoar_dm_validation_log.jsonl
+        ./gradlew run --args="--check productionsAgainstDatamap --project ${{ inputs.projectPath }} --json" | tee visualsoar_dm_validation_log.jsonl
         gradle_exit_code=${PIPESTATUS[0]}
         if [ ! -f visualsoar_dm_validation_log.jsonl ]; then
           echo "Error: visualsoar_dm_validation_log.jsonl was not created."
