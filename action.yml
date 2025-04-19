@@ -23,4 +23,30 @@ runs:
       shell: bash
       run: |
         cd VisualSoar
-          ./gradlew run --args="--check productionsAgainstDatamap --project ${{ inputs.projectPath }} --json" || exit 1
+        ./gradlew run --args="--check productionsAgainstDatamap --project ${{ inputs.projectPath }}" | tee visualsoar_dm_validation_log.log
+        gradle_exit_code=${PIPESTATUS[0]}
+        exit $gradle_exit_code
+
+    - name: Check Datamap Validation Result
+      if: failure()
+      shell: bash
+      run: |
+        # Iterate over each line in the output file and create an error annotation
+        while IFS= read -r line; do
+          # Skip empty lines
+          if [[ -n "$line" ]]; then
+            echo "::error::$line"
+          fi
+        done < visualsoar_dm_validation_log.log
+
+    - name: Upload Validation Log
+      if: failure()
+      uses: actions/upload-artifact@v3
+      with:
+        name: visualsoar_dm_validation_log_log
+        path: visualsoar_dm_validation_log.log
+
+    - name: Validation Passed
+      if: success()
+      shell: bash
+      run: echo "Datamap validation completed successfully!"
