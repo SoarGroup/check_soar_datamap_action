@@ -35,7 +35,7 @@ runs:
 
     - name: Upload Validation Log
       if: failure()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: visualsoar_dm_validation_log.jsonl
         path: visualsoar_dm_validation_log.jsonl

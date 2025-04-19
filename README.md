@@ -33,4 +33,4 @@ jobs:
 
 ## Outputs
 
-This action does not currently produce outputs, but will fail the workflow if validation fails.
+This action does not currently produce action outputs. If the validation fails, the action will be annotated with the diagnostics provided by VisualSoar, and the step itself will fail the build.
