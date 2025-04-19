@@ -4,9 +4,9 @@ This GitHub Action runs the [VisualSoar](https://github.com/SoarGroup/VisualSoar
 
 ## Inputs
 
-| Name          | Description                                      | Required | Default |
-|---------------|--------------------------------------------------|----------|---------|
-| `projectPath` | Path to the Soar project file to validate.       | Yes      |         |
+| Name          | Description                                                                     | Required | Default |
+|---------------|---------------------------------------------------------------------------------|----------|---------|
+| `projectPath` | Path to the Soar project file to validate, relative to your project root.       | Yes      |         |
 
 ## Example Usage
 
