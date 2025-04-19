@@ -1,0 +1,26 @@
+name: "Run VisualSoar Datamap Validation"
+description: "Validate Soar project code against its datamap using VisualSoar"
+author: "Nathan Glenn"
+inputs:
+  projectPath:
+    description: "Path to the Soar project file to validate."
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout VisualSoar
+      uses: actions/checkout@v3
+      with:
+        repository: "YourUsername/VisualSoar"
+        path: "VisualSoar"
+
+    - name: Set up Java
+      uses: actions/setup-java@v3
+      with:
+        java-version: "11"
+
+    - name: Run Datamap Validation
+      shell: bash
+      run: |
+        cd VisualSoar
+          ./gradlew run --args="--check productionsAgainstDatamap --project ${{ inputs.projectPath }} --json" || exit 1
