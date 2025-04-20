@@ -12,12 +12,12 @@ runs:
       uses: actions/checkout@v3
       with:
         repository: "SoarGroup/VisualSoar"
-        path: "VisualSoar"
+        path: "${{ runner.temp }}/VisualSoar"
 
     - name: Report VisualSoar Version and Git SHA
       shell: bash
       run: |
-        cd VisualSoar
+        cd "${{ runner.temp }}/VisualSoar"
         ./gradlew properties -q | grep "version:" > visualsoar_version.txt
         echo "VisualSoar version: $(cat visualsoar_version.txt)"
         git rev-parse HEAD > visualsoar_git_sha.txt
@@ -31,11 +31,11 @@ runs:
     - name: Run Datamap Validation
       shell: bash
       run: |
-        cd VisualSoar
+        cd "${{ runner.temp }}/VisualSoar"
         abs_project_path="${{ github.workspace }}/${{ inputs.projectPath }}"
-        ./gradlew run --args="--check productionsAgainstDatamap --project \"$abs_project_path\" --json" | tee ../visualsoar_dm_validation_log.jsonl
+        ./gradlew run --args="--check productionsAgainstDatamap --project \"$abs_project_path\" --json" | tee "${{ runner.temp }}/visualsoar_dm_validation_log.jsonl"
         gradle_exit_code=${PIPESTATUS[0]}
-        if [ ! -f ../visualsoar_dm_validation_log.jsonl ]; then
+        if [ ! -f "${{ runner.temp }}/visualsoar_dm_validation_log.jsonl" ]; then
           echo "Error: visualsoar_dm_validation_log.jsonl was not created."
           exit 1
         fi
@@ -46,16 +46,17 @@ runs:
       if: failure()
       shell: bash
       run: |
-        ./parse_diagnostics.sh < visualsoar_dm_validation_log.jsonl
+        ${{ github.action_path }}/parse_diagnostics.sh < "${{ runner.temp }}/visualsoar_dm_validation_log.jsonl"
 
     - name: Upload Validation Log
       if: failure()
       uses: actions/upload-artifact@v4
       with:
         name: visualsoar_dm_validation_log.jsonl
-        path: visualsoar_dm_validation_log.jsonl
+        path: ${{ runner.temp }}/visualsoar_dm_validation_log.jsonl
 
     - name: Validation Passed
       if: success()
       shell: bash
-      run: echo "Datamap validation completed successfully!"
+      run: |
+        echo "Datamap validation completed successfully for project: ${{ inputs.projectPath }}"
