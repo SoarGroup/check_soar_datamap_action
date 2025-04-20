@@ -40,18 +40,3 @@ jobs:
             echo "Expected validation to fail, but it passed."
             exit 1
           fi
-
-      - name: Download Validation Log Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: visualsoar_dm_validation_log.jsonl
-          path: downloaded_artifacts
-
-      - name: Verify Artifact Exists
-        run: |
-          if [ ! -f downloaded_artifacts/visualsoar_dm_validation_log.jsonl ]; then
-            echo "Artifact was not uploaded or could not be downloaded."
-            exit 1
-          else
-            echo "Artifact was successfully uploaded and downloaded."
-          fi

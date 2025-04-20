@@ -5,6 +5,14 @@ inputs:
   projectPath:
     description: "Path to the Soar project file to validate."
     required: true
+  outputPath:
+    description: "Path to the output file for validation results."
+    required: false
+    default: "${{ runner.temp }}/visualsoar_dm_validation_log.jsonl"
+outputs:
+  outputPath:
+    description: "The path to the output file for validation results."
+    value: ${{ inputs.outputPath }}
 runs:
   using: "composite"
   steps:
@@ -33,9 +41,9 @@ runs:
       run: |
         cd "external/VisualSoar"
         abs_project_path="${{ github.workspace }}/${{ inputs.projectPath }}"
-        ./gradlew run --args="--check productionsAgainstDatamap --project \"$abs_project_path\" --json" | tee "${{ runner.temp }}/visualsoar_dm_validation_log.jsonl"
+        ./gradlew run --quiet --args="--check productionsAgainstDatamap --project \"$abs_project_path\" --json" | tee "${{ inputs.outputPath }}"
         gradle_exit_code=${PIPESTATUS[0]}
-        if [ ! -f "${{ runner.temp }}/visualsoar_dm_validation_log.jsonl" ]; then
+        if [ ! -f "${{ inputs.outputPath }}" ]; then
           echo "Error: visualsoar_dm_validation_log.jsonl was not created."
           exit 1
         fi
@@ -46,14 +54,7 @@ runs:
       if: failure()
       shell: bash
       run: |
-        ${{ github.action_path }}/parse_diagnostics.sh < "${{ runner.temp }}/visualsoar_dm_validation_log.jsonl"
-
-    - name: Upload Validation Log
-      if: failure()
-      uses: actions/upload-artifact@v4
-      with:
-        name: visualsoar_dm_validation_log.jsonl
-        path: ${{ runner.temp }}/visualsoar_dm_validation_log.jsonl
+        ${{ github.action_path }}/parse_diagnostics.sh < "${{ inputs.outputPath }}"
 
     - name: Validation Passed
       if: success()
