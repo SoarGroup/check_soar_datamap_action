@@ -12,12 +12,12 @@ runs:
       uses: actions/checkout@v3
       with:
         repository: "SoarGroup/VisualSoar"
-        path: "${{ runner.temp }}/VisualSoar"
+        path: "external/VisualSoar"
 
     - name: Report VisualSoar Version and Git SHA
       shell: bash
       run: |
-        cd "${{ runner.temp }}/VisualSoar"
+        cd "external/VisualSoar"
         ./gradlew properties -q | grep "version:" > visualsoar_version.txt
         echo "VisualSoar version: $(cat visualsoar_version.txt)"
         git rev-parse HEAD > visualsoar_git_sha.txt
@@ -31,7 +31,7 @@ runs:
     - name: Run Datamap Validation
       shell: bash
       run: |
-        cd "${{ runner.temp }}/VisualSoar"
+        cd "external/VisualSoar"
         abs_project_path="${{ github.workspace }}/${{ inputs.projectPath }}"
         ./gradlew run --args="--check productionsAgainstDatamap --project \"$abs_project_path\" --json" | tee "${{ runner.temp }}/visualsoar_dm_validation_log.jsonl"
         gradle_exit_code=${PIPESTATUS[0]}
@@ -60,3 +60,13 @@ runs:
       shell: bash
       run: |
         echo "Datamap validation completed successfully for project: ${{ inputs.projectPath }}"
+
+    # Remove the VisualSoar folder after the action completes
+    # to avoid cluttering the client workspace with unnecessary files.
+    - name: Cleanup VisualSoar Folder
+      if: always()
+      shell: bash
+      run: |
+        echo "Cleaning up VisualSoar folder..."
+        rm -rf "external/VisualSoar"
+        echo "Cleanup completed."
