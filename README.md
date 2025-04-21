@@ -1,6 +1,6 @@
-# VisualSoar Datamap Validation Action
+# Soar Datamap Validation
 
-This GitHub Action runs the [VisualSoar](https://github.com/SoarGroup/VisualSoar) datamap validation on a user-specified Soar project.
+This action checks the productions in a Soar project against their datamap using [VisualSoar](https://github.com/SoarGroup/VisualSoar).
 
 ## Inputs
 
