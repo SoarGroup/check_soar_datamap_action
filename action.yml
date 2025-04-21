@@ -1,6 +1,9 @@
-name: "Run VisualSoar Datamap Validation"
+name: "Soar Datamap Validation"
 description: "Validate Soar project code against its datamap using VisualSoar"
 author: "Nathan Glenn"
+branding:
+  icon: "check-circle"
+  color: "blue"
 inputs:
   projectPath:
     description: "Path to the Soar project file to validate."
