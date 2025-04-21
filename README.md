@@ -33,7 +33,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Run VisualSoar Validation
-        uses: SoarGroup/check_soar_datamap_action@v1
+        uses: SoarGroup/check_soar_datamap_action@v1.0.4
         with:
           projectPath: "path/to/soar/project/thor-soar.vsa.json"
 ```
